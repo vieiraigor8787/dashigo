@@ -68,12 +68,12 @@ export default function Dashboard() {
           minChildWidth="320px"
           alignItems="flex-start"
         >
-          <Box p={["6", "8"]} bg="gray.800" borderRadius={8}>
+          <Box p={["8", "6"]} bg="gray.800" borderRadius={8}>
             <Text>asdasd</Text>
             <Chart type="area" height={160} options={options} series={series} />
           </Box>
 
-          <Box p={["6", "8"]} bg="gray.800" borderRadius={8}>
+          <Box p={["8", "6"]} bg="gray.800" borderRadius={8}>
             <Text>asdasd</Text>
           </Box>
         </SimpleGrid>
