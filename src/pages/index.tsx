@@ -18,15 +18,16 @@ export default function Home() {
             <Input name="email" type="email" label="E-mail" />
             <Input name="password" type="password" label="Senha" />
           </Stack>
-          <Button
-            type="submit"
-            mt="6"
-            colorScheme="pink"
-            cursor="pointer"
-            border="none"
-          >
-            Entrar
-          </Button>
+
+            <Button
+              type="submit"
+              mt="6"
+              colorScheme="pink"
+              cursor="pointer"
+              border="none"
+            >
+              Entrar
+            </Button>
         </Flex>
       </Flex>
     </>

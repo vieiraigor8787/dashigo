@@ -24,6 +24,11 @@ export const theme = extendTheme({
       body: {
        bg: 'gray.900',
        color: 'gray.50'
+      },
+      a: {
+        _hover: {
+          textDecoration: 'none',
+        },
       }
     }
   },
