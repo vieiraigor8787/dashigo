@@ -44,7 +44,6 @@ export default function Home() {
               type="email"
               label="E-mail"
               {...register("email")}
-              
             />
             <p>{errors.email?.message}</p>
             <Input
