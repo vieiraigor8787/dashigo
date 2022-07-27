@@ -6,7 +6,8 @@ import {
   Heading,
   HStack,
   SimpleGrid,
-  VStack,
+  Stack,
+  Text
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -62,6 +63,7 @@ export default function CreateUser() {
         <Sidebar />
 
         <Box
+          as="form"
           flex="1"
           borderRadius={8}
           bg="gray.800"
@@ -74,7 +76,7 @@ export default function CreateUser() {
 
           <Divider my="6" />
 
-          <VStack spacing="8">
+          <Stack spacing="8" >
             <SimpleGrid minChildWidth="240px" spacing={["6","8"]} w="100%">
               <Input name="name" label="nome completo" {...register("name")} />
               <Input name="email" label="E-mail" {...register("email")} />
@@ -86,15 +88,15 @@ export default function CreateUser() {
                 label="senha"
                 type="password"
                 {...register("password")}
-              />
+                />
               <Input
                 name="password_confirmation"
                 label="confirmação da senha"
                 type="password"
                 {...register("password_confirmation")}
-              />
+                />
             </SimpleGrid>
-          </VStack>
+          </Stack>
 
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">
@@ -106,11 +108,9 @@ export default function CreateUser() {
                   Cancelar
                 </Button>
               </Link>
-              <Link href="" passHref>
                 <Button type="submit" colorScheme="pink" border="none" isLoading={isSubmitting} >
                   Confirmar
                 </Button>
-              </Link>
             </HStack>
           </Flex>
         </Box>
