@@ -28,7 +28,17 @@ export default function UserList() {
     const response = await fetch("http://localhost:3000/api/users");
     const data = await response.json();
 
-    return data;
+    const users = data.users.map(user => {
+      return {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        createdAt: new Date(user.createdAt).toLocaleDateString()
+      }
+    })
+
+    console.log(users)
+    return users;
   });
 
   const isWideVersion = useBreakpointValue({
@@ -91,7 +101,9 @@ export default function UserList() {
                 </Thead>
 
                 <Tbody>
-                  <Tr>
+                 {data.map(user => {
+                  return (
+                    <Tr>
                     <Td px={["4", "4", "6"]}>
                       <Checkbox colorScheme="pink" />
                     </Td>
@@ -118,6 +130,8 @@ export default function UserList() {
                       </Button>
                     </Td>
                   </Tr>
+                  )
+                 })}
                 </Tbody>
               </Table>
               <Pagination />
@@ -128,3 +142,7 @@ export default function UserList() {
     </Box>
   );
 }
+function user(user: any): import("react").ReactNode {
+  throw new Error("Function not implemented.");
+}
+
