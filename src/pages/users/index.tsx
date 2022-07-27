@@ -24,7 +24,7 @@ import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
 
 export default function UserList() {
-  const { error, isLoading } = useQuery(["users"], async () => {
+  const { data, error, isLoading } = useQuery(["users"], async () => {
     const response = await fetch("http://localhost:3000/api/users");
     const data = await response.json();
 
@@ -33,7 +33,11 @@ export default function UserList() {
         id: user.id,
         name: user.name,
         email: user.email,
-        createdAt: new Date(user.createdAt).toLocaleDateString()
+        createdAt: new Date(user.createdAt).toLocaleDateString('pt-BR', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        })
       }
     })
 
@@ -103,19 +107,19 @@ export default function UserList() {
                 <Tbody>
                  {data.map(user => {
                   return (
-                    <Tr>
+                    <Tr key={user.id} >
                     <Td px={["4", "4", "6"]}>
                       <Checkbox colorScheme="pink" />
                     </Td>
                     <Td>
                       <Box>
-                        <Text>Igor vieira</Text>
-                        <Text color="gray.400" fontSize="sm">
-                          igor.vieira@ahsuahs.com
+                        <Text margin="auto">{user.name}</Text>
+                        <Text margin="auto" color="gray.300" fontSize="sm">
+                          {user.email}
                         </Text>
                       </Box>
                     </Td>
-                    {isWideVersion && <Td>21/07/2022</Td>}
+                    {isWideVersion && <Td>{user.createdAt}</Td>}
 
                     <Td>
                       <Button
@@ -142,7 +146,3 @@ export default function UserList() {
     </Box>
   );
 }
-function user(user: any): import("react").ReactNode {
-  throw new Error("Function not implemented.");
-}
-
