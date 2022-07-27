@@ -13,6 +13,7 @@ import {
   Thead,
   Tr,
   useBreakpointValue,
+  Spinner,
 } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -23,14 +24,12 @@ import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
 
 export default function UserList() {
-  const query = useQuery(['users'], async () => {
+  const { error, isLoading } = useQuery(["users"], async () => {
     const response = await fetch("http://localhost:3000/api/users");
     const data = await response.json();
 
     return data;
-  })
-  console.log(query)
-
+  });
 
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -65,54 +64,65 @@ export default function UserList() {
             </Link>
           </Flex>
 
-          <Table colorScheme="whiteAlpha">
-            <Thead>
-              <Tr>
-                <Th px="6" width="8">
-                  <Checkbox colorScheme="pink" />
-                </Th>
-                <Th px="6" width="8">
-                  Usuário
-                </Th>
-                <Th px="6" width="8">
-                  Data de cadastro
-                </Th>
-                <Th width="8"></Th>
-              </Tr>
-            </Thead>
+          {isLoading ? (
+            <Flex justify="center">
+              <Spinner />
+            </Flex>
+          ) : error ? (
+            <Flex justify="center">
+              <Text>Falha ao obter dados</Text>
+            </Flex>
+          ) : (
+            <>
+              <Table colorScheme="whiteAlpha">
+                <Thead>
+                  <Tr>
+                    <Th px="6" width="8">
+                      <Checkbox colorScheme="pink" />
+                    </Th>
+                    <Th px="6" width="8">
+                      Usuário
+                    </Th>
+                    <Th px="6" width="8">
+                      Data de cadastro
+                    </Th>
+                    <Th width="8"></Th>
+                  </Tr>
+                </Thead>
 
-            <Tbody>
-              <Tr>
-                <Td px={["4", "4", "6"]}>
-                  <Checkbox colorScheme="pink" />
-                </Td>
-                <Td>
-                  <Box>
-                    <Text>Igor vieira</Text>
-                    <Text color="gray.400" fontSize="sm">
-                      igor.vieira@ahsuahs.com
-                    </Text>
-                  </Box>
-                </Td>
-                {isWideVersion && <Td>21/07/2022</Td>}
+                <Tbody>
+                  <Tr>
+                    <Td px={["4", "4", "6"]}>
+                      <Checkbox colorScheme="pink" />
+                    </Td>
+                    <Td>
+                      <Box>
+                        <Text>Igor vieira</Text>
+                        <Text color="gray.400" fontSize="sm">
+                          igor.vieira@ahsuahs.com
+                        </Text>
+                      </Box>
+                    </Td>
+                    {isWideVersion && <Td>21/07/2022</Td>}
 
-                <Td>
-                  <Button
-                    as="a"
-                    size="sm"
-                    fontSize="sm"
-                    colorScheme="purple"
-                    fontWeight="normal"
-                    leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                  >
-                    {isWideVersion ? "Editar" : ""}
-                  </Button>
-                </Td>
-              </Tr>
-            </Tbody>
-          </Table>
-
-          <Pagination />
+                    <Td>
+                      <Button
+                        as="a"
+                        size="sm"
+                        fontSize="sm"
+                        colorScheme="purple"
+                        fontWeight="normal"
+                        leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                      >
+                        {isWideVersion ? "Editar" : ""}
+                      </Button>
+                    </Td>
+                  </Tr>
+                </Tbody>
+              </Table>
+              <Pagination />
+            </>
+          )}
         </Box>
       </Flex>
     </Box>
