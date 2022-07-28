@@ -26,10 +26,14 @@ export const theme = extendTheme({
        color: 'gray.50'
       },
       a: {
+        cursor: "pointer",
         textDecoration: 'none',
         _hover: {
           textDecoration: 'none',
         },
+      },
+      button: {
+        cursor: "pointer"
       }
     }
   },

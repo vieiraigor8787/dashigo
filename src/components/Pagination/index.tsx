@@ -5,7 +5,7 @@ interface PaginationProps {
   totalRegisters: number;
   registerPerPage?: number;
   currentPage?: number;
-  onPageChange?: (poge: number) => void;
+  onPageChange?: (page: number) => void;
 }
 
 const siblingsCount = 1;
@@ -50,27 +50,51 @@ export function Pagination({
       <Stack direction="row" spacing="2">
         {currentPage > 1 + siblingsCount && (
           <>
-            <ButtonPagination number={1} />
-            {currentPage > 2 + siblingsCount && <Text>...</Text>}
+            <ButtonPagination onPageChange={onPageChange} number={1} />
+            {currentPage > 2 + siblingsCount && (
+              <Text color="gray.300" textAlign="center" width="8">
+                ...
+              </Text>
+            )}
           </>
         )}
 
         {previousPages.length > 0 &&
           previousPages.map((page) => {
-            return <ButtonPagination key={page} number={page} />;
+            return (
+              <ButtonPagination
+                onPageChange={onPageChange}
+                key={page}
+                number={page}
+              />
+            );
           })}
 
-        <ButtonPagination number={currentPage} isCurrentPage />
+        <ButtonPagination
+          onPageChange={onPageChange}
+          number={currentPage}
+          isCurrentPage
+        />
 
         {nextPages.length > 0 &&
           nextPages.map((page) => {
-            return <ButtonPagination key={page} number={page} />;
+            return (
+              <ButtonPagination
+                onPageChange={onPageChange}
+                key={page}
+                number={page}
+              />
+            );
           })}
 
         {currentPage + siblingsCount < lastPage && (
           <>
-            {currentPage + 1 + siblingsCount < lastPage && <Text>...</Text>}
-            <ButtonPagination number={lastPage} />
+            {currentPage + 1 + siblingsCount < lastPage && (
+              <Text color="gray.300" textAlign="center" width="8">
+                ...
+              </Text>
+            )}
+            <ButtonPagination onPageChange={onPageChange} number={lastPage} />
           </>
         )}
       </Stack>
