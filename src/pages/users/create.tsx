@@ -19,6 +19,8 @@ import { useMutation } from "@tanstack/react-query";
 import { api } from "../../services/api";
 import { queryClient } from "../../services/queryClient";
 import { useRouter } from "next/router";
+import { GetServerSideProps } from "next";
+import { getUsers } from "../../services/hooks/useUsers";
 
 type CreateUserFormData = {
   name: string;
@@ -140,4 +142,13 @@ export default function CreateUser() {
       </Flex>
     </Box>
   );
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const { users, totalCount } = await getUsers(1)
+  return {
+    props: {
+      users,
+    }
+  }
 }

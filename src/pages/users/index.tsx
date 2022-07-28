@@ -27,9 +27,11 @@ import { api } from "../../services/api";
 import { useUsers } from "../../services/hooks/useUsers";
 import { queryClient } from "../../services/queryClient";
 
-export default function UserList() {
+export default function UserList({ users }) {
   const [page, setPage] = useState(1);
-  const { data, error, isLoading, isFetching } = useUsers(page);
+  const { data, error, isLoading, isFetching } = useUsers(page, {
+    initialData: users,
+  });
 
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -37,13 +39,17 @@ export default function UserList() {
   });
 
   async function handlePrefetchUser(userId: string) {
-    await queryClient.prefetchQuery(['user', userId], async () => {
-      const response = await api.get(`/users/${userId}`)
-      
-      return response.data;
-    }, {
-      staleTime: 1000 * 60 * 10 //10min
-    })
+    await queryClient.prefetchQuery(
+      ["user", userId],
+      async () => {
+        const response = await api.get(`/users/${userId}`);
+
+        return response.data;
+      },
+      {
+        staleTime: 1000 * 60 * 10, //10min
+      }
+    );
   }
 
   return (
@@ -112,8 +118,11 @@ export default function UserList() {
                         </Td>
                         <Td>
                           <Box>
-                            <ChakraLink color="purple.500" onMouseEnter={() => handlePrefetchUser(user.id)}>
-                            <Text margin="auto">{user.name}</Text>
+                            <ChakraLink
+                              color="purple.500"
+                              onMouseEnter={() => handlePrefetchUser(user.id)}
+                            >
+                              <Text margin="auto">{user.name}</Text>
                             </ChakraLink>
                             <Text margin="auto" color="gray.300" fontSize="sm">
                               {user.email}

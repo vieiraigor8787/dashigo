@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { api } from "../api";
 
 interface User {
@@ -13,7 +13,7 @@ interface GetUserResponse  {
   users: User[];
 }
 
-async function getUsers(page: number): Promise<GetUserResponse> {
+export async function getUsers(page: number): Promise<GetUserResponse> {
   const { data, headers } = await api.get("users", {
     params: {
       page,
@@ -42,10 +42,12 @@ async function getUsers(page: number): Promise<GetUserResponse> {
   
 }
 
+
 //separando o hook da função que lista os usuários getUsers, desta forma é possivel utilizar a função de listagem em outro componente, independente do hook.
 
-export function useUsers(page: number) {
+export function useUsers(page: number, options: UseQueryOptions) {
   return useQuery([["users"], page], () => getUsers(page), {
     staleTime: 1000 * 5,
+    ...options,
   });
 }
