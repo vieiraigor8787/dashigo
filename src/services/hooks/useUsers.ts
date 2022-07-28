@@ -45,7 +45,7 @@ async function getUsers(page: number): Promise<GetUserResponse> {
 //separando o hook da função que lista os usuários getUsers, desta forma é possivel utilizar a função de listagem em outro componente, independente do hook.
 
 export function useUsers(page: number) {
-  return useQuery(["users"], () => getUsers(page), {
+  return useQuery([["users"], page], () => getUsers(page), {
     staleTime: 1000 * 5,
   });
 }
