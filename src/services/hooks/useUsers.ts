@@ -2,16 +2,16 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "../api";
 
 interface User {
-  id: number;
+  id: string;
   name: string;
   email: string;
   createdAt: string;
 }
 
-async function getUsers() {
+async function getUsers(): Promise<User[]> {
   const { data } = await api.get("users");
 
-  const users = data.users.map((user: User) => {
+  const users = data.users.map((user) => {
     return {
       id: user.id,
       name: user.name,
