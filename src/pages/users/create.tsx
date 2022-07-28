@@ -17,6 +17,8 @@ import { Sidebar } from "../../components/Sidebar";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import { api } from "../../services/api";
+import { queryClient } from "../../services/queryClient";
+import { useRouter } from "next/router";
 
 type CreateUserFormData = {
   name: string;
@@ -38,16 +40,25 @@ const CreateUserFormSchema = yup.object({
 });
 
 export default function CreateUser() {
-  const createUser = useMutation(async (user: CreateUserFormData) => {
-    const response = await api.post('users', {
-      user: {
-        ... user,
-        created_at: new Date(),
-      }
-    })
+  const router = useRouter();
 
-    return response.data.user;
-  })
+  const createUser = useMutation(
+    async (user: CreateUserFormData) => {
+      const response = await api.post("users", {
+        user: {
+          ...user,
+          created_at: new Date(),
+        },
+      });
+
+      return response.data.user;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["users"]);
+      },
+    }
+  );
 
   const {
     register,
@@ -62,6 +73,7 @@ export default function CreateUser() {
   ) => {
     await createUser.mutateAsync(values);
 
+    router.push('/users')
   };
 
   return (
@@ -85,41 +97,43 @@ export default function CreateUser() {
 
           <Divider my="6" />
 
-          <Stack spacing="8" >
-            <SimpleGrid minChildWidth="240px" spacing={["6","8"]} w="100%">
+          <Stack spacing="8">
+            <SimpleGrid minChildWidth="240px" spacing={["6", "8"]} w="100%">
               <Input name="name" label="nome completo" {...register("name")} />
               <Input name="email" label="E-mail" {...register("email")} />
             </SimpleGrid>
 
-            <SimpleGrid minChildWidth="240px" spacing={["6","8"]} w="100%">
+            <SimpleGrid minChildWidth="240px" spacing={["6", "8"]} w="100%">
               <Input
                 name="password"
                 label="senha"
                 type="password"
                 {...register("password")}
-                />
+              />
               <Input
                 name="password_confirmation"
                 label="confirmação da senha"
                 type="password"
                 {...register("password_confirmation")}
-                />
+              />
             </SimpleGrid>
           </Stack>
 
           <Flex mt="8" justify="flex-end">
             <HStack spacing="4">
               <Link href="/users" passHref>
-                <Button
-                  as="a"
-                  colorScheme="whiteAlpha"
-                >
+                <Button as="a" colorScheme="whiteAlpha">
                   Cancelar
                 </Button>
               </Link>
-                <Button type="submit" colorScheme="pink" border="none" isLoading={isSubmitting} >
-                  Confirmar
-                </Button>
+              <Button
+                type="submit"
+                colorScheme="pink"
+                border="none"
+                isLoading={isSubmitting}
+              >
+                Confirmar
+              </Button>
             </HStack>
           </Flex>
         </Box>
