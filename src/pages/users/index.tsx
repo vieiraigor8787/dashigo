@@ -4,6 +4,7 @@ import {
   Checkbox,
   Flex,
   Heading,
+  Link as ChakraLink,
   Text,
   Icon,
   Table,
@@ -22,7 +23,9 @@ import { RiAddLine, RiPencilLine } from "react-icons/ri";
 import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
+import { api } from "../../services/api";
 import { useUsers } from "../../services/hooks/useUsers";
+import { queryClient } from "../../services/queryClient";
 
 export default function UserList() {
   const [page, setPage] = useState(1);
@@ -32,6 +35,16 @@ export default function UserList() {
     base: false,
     lg: true,
   });
+
+  async function handlePrefetchUser(userId: number) {
+    await queryClient.prefetchQuery(['user', userId], async () => {
+      const response = await api.get(`/users/${userId}`)
+      
+      return response.data;
+    }, {
+      staleTime: 1000 * 60 * 10 //10min
+    })
+  }
 
   return (
     <Box>
@@ -44,8 +57,9 @@ export default function UserList() {
           <Flex mb="8" justify="space-between" align="center">
             <Heading size="lg" fontWeight="normal">
               Usuários
-
-              { !isLoading && isFetching && <Spinner size="sm" color="gray.500" marginLeft={3}/>}
+              {!isLoading && isFetching && (
+                <Spinner size="sm" color="gray.500" marginLeft={3} />
+              )}
             </Heading>
 
             <Link href="/users/create" passHref>
@@ -90,40 +104,46 @@ export default function UserList() {
                 </Thead>
 
                 <Tbody>
-                 {data.users.map(user => {
-                  return (
-                    <Tr key={user.id} >
-                    <Td px={["4", "4", "6"]}>
-                      <Checkbox colorScheme="pink" />
-                    </Td>
-                    <Td>
-                      <Box>
-                        <Text margin="auto">{user.name}</Text>
-                        <Text margin="auto" color="gray.300" fontSize="sm">
-                          {user.email}
-                        </Text>
-                      </Box>
-                    </Td>
-                    {isWideVersion && <Td px="4">{user.createdAt}</Td>}
+                  {data.users.map((user) => {
+                    return (
+                      <Tr key={user.id}>
+                        <Td px={["4", "4", "6"]}>
+                          <Checkbox colorScheme="pink" />
+                        </Td>
+                        <Td>
+                          <Box>
+                            <ChakraLink color="purple.500" onMouseEnter={() => handlePrefetchUser(user.id)}>
+                            <Text margin="auto">{user.name}</Text>
+                            </ChakraLink>
+                            <Text margin="auto" color="gray.300" fontSize="sm">
+                              {user.email}
+                            </Text>
+                          </Box>
+                        </Td>
+                        {isWideVersion && <Td px="4">{user.createdAt}</Td>}
 
-                    <Td>
-                      <Button
-                        as="a"
-                        size="sm"
-                        fontSize="sm"
-                        colorScheme="purple"
-                        fontWeight="normal"
-                        leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                      >
-                        {isWideVersion ? "Editar" : ""}
-                      </Button>
-                    </Td>
-                  </Tr>
-                  )
-                 })}
+                        <Td>
+                          <Button
+                            as="a"
+                            size="sm"
+                            fontSize="sm"
+                            colorScheme="purple"
+                            fontWeight="normal"
+                            leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
+                          >
+                            {isWideVersion ? "Editar" : ""}
+                          </Button>
+                        </Td>
+                      </Tr>
+                    );
+                  })}
                 </Tbody>
               </Table>
-              <Pagination totalRegisters={data.totalCount} currentPage={page} onPageChange={setPage}/>
+              <Pagination
+                totalRegisters={data.totalCount}
+                currentPage={page}
+                onPageChange={setPage}
+              />
             </>
           )}
         </Box>
